@@ -35,7 +35,7 @@ public class TokenManager implements Serializable {
                 .compact();
     }
 
-    public Boolean validateToken(String token, UserDetails userDetails) {
+    public Boolean validateJwtToken(String token, UserDetails userDetails) {
         String username = getUsernameFromToken(token);
         Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
 
