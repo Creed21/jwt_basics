@@ -16,15 +16,10 @@ import java.util.HashMap;
 public class TokenManager implements Serializable {
 
     private static final long serialVersionUID = 7008375124389347049L;
-    public static final long TOKEN_VALIDITY = 2 * 60 * 60;
+    public static final long TOKEN_VALIDITY = 10 * 60 * 60;
     @Value("${jwt.secret}")
     private String jwtSecret;
 
-    /**
-     * ova metoda generise jwt token ....
-     * @param userDetails
-     * @return
-     */
     public String generateJwtToken(UserDetails userDetails) {
         return Jwts.builder()
                 .setClaims(new HashMap<>())
