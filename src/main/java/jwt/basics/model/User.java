@@ -1,13 +1,18 @@
 package jwt.basics.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements UserDetails {
     @Id
     @GeneratedValue(generator = "user_sequ", strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(name = "user_sequ", sequenceName = "user_sequ", initialValue = 1, allocationSize = 1)
@@ -77,6 +82,39 @@ public class User {
     }
 
     @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        Set<GrantedAuthority> authorities = new HashSet<>();
+
+        this.getRoles()
+                .stream()
+                .forEach( r -> {
+                    authorities.add(new SimpleGrantedAuthority("ROLE_" + r.getName()));
+
+                    r.getAuthorities().stream()
+                            .forEach(authority -> {
+                                authorities.add(new SimpleGrantedAuthority(authority.getName()));
+                            });
+                });
+
+        return authorities;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -101,4 +139,5 @@ public class User {
                 ", roles=" + roles +
                 '}';
     }
+
 }

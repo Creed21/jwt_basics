@@ -2,8 +2,8 @@ package jwt.basics.config;
 
 import jwt.basics.jwtutils.MyUserDetailsService;
 import jwt.basics.jwtutils.TokenManager;
-import jwt.basics.jwtutils.models.JwtRequestModel;
-import jwt.basics.jwtutils.models.JwtResponseModel;
+import jwt.basics.jwtutils.models.JwtRequest;
+import jwt.basics.jwtutils.models.JwtResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,7 +28,7 @@ public class JwtController {
     private TokenManager tokenManager;
 
     @PostMapping("/login")
-    public ResponseEntity createToken(@RequestBody JwtRequestModel request) throws Exception {
+    public ResponseEntity createToken(@RequestBody JwtRequest request) throws Exception {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
@@ -41,6 +41,6 @@ public class JwtController {
         UserDetails userDetails = userDetailsService.loadUserByUsername(request.getUsername());
         String jwtToken = tokenManager.generateJwtToken(userDetails);
 
-        return ResponseEntity.ok(new JwtResponseModel(jwtToken));
+        return ResponseEntity.ok(new JwtResponse(jwtToken));
     }
 }
