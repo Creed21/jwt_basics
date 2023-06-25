@@ -35,6 +35,7 @@ public class TokenManager implements Serializable {
                                     .collect(Collectors.joining(", ")));
 
         claims.put("username", userDetails.getUsername());
+        claims.put("email", "some random email address");
 
         return Jwts.builder()
                 .setIssuer("fon.master.security.A")
