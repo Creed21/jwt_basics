@@ -5,12 +5,12 @@ import java.io.Serializable;
 public class JwtResponseModel implements Serializable {
     private static final long serialVersionUID = 1123213L;
 
-    private final String token;
+    private final String accessToken;
 
-    public JwtResponseModel(String token) {
-        this.token = token;
+    public JwtResponseModel(String accessToken) {
+        this.accessToken = accessToken;
     }
     public String getToken() {
-        return token;
+        return accessToken;
     }
 }

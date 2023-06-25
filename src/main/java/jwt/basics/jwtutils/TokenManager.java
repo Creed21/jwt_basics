@@ -11,6 +11,8 @@ import org.springframework.stereotype.Component;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 public class TokenManager implements Serializable {
@@ -26,11 +28,21 @@ public class TokenManager implements Serializable {
      * @return
      */
     public String generateJwtToken(UserDetails userDetails) {
+        Map<String, Object> claims = new HashMap<String, Object>();
+
+        claims.put("authorities", userDetails.getAuthorities().stream()
+                                    .map(x -> x.getAuthority())
+                                    .collect(Collectors.joining(", ")));
+
+        claims.put("username", userDetails.getUsername());
+
         return Jwts.builder()
-                .setClaims(new HashMap<>())
+                .setIssuer("fon.master.security.A")
+                .setClaims(claims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + TOKEN_VALIDITY))
+                .setHeaderParam("token", "access_token") // check this
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
     }
